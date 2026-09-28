@@ -1,2 +1,4 @@
 .env
 docs.md
+src/workflows/__pycache__/
+src/workflows/nodes/__pycache__/

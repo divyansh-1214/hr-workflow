@@ -1,9 +1,6 @@
 from dotenv import load_dotenv
-from langchain.agents import create_agent
-from langchain.agents.structured_output import SchemaT
-from langchain_core.utils.uuid import uuid7
-from langgraph.checkpoint.memory import InMemorySaver
-from pydantic import BaseModel, Field
+
+from src.workflows.graph import graph
 
 load_dotenv()
 
@@ -37,69 +34,12 @@ jd = """
     - Strong experience with cloud platforms (AWS, GCP, or Azure) and containerization/orchestration (Docker, Kubernetes
 """
 # print(jd)
-system_prompt = """
-You are an expert technical recruiter and job description analyzer.
-
-Your task is to extract all relevant skills from the provided job description.
-
-Instructions:
-1. Extract only skills explicitly mentioned or strongly implied.
-2. Include programming languages, frameworks, databases, cloud platforms,
-   DevOps tools, architectural concepts, and domain knowledge.
-3. Include relevant engineering and interpersonal skills.
-4. Avoid duplicate skills.
-5. Do not invent technologies that are not supported by the JD.
-6. Return concise, standardized skill names.
-7. Follow the provided structured output schema.
-"""
+def main() -> None:
+    result = graph.invoke({"jd_text": jd})
+    print("Extracted skills:")
+    for skill in result["skills"]:
+        print(f"- {skill}")
 
 
-class SkillResponse(BaseModel):
-    programming_languages: list[str] = Field(description="Programming languages")
-
-    frameworks: list[str] = Field(description="Frameworks and libraries")
-
-    databases: list[str] = Field(description="Database technologies")
-
-    cloud_and_devops: list[str] = Field(
-        description="Cloud platforms, CI/CD, infrastructure and containerization"
-    )
-
-    system_design: list[str] = Field(
-        description="Distributed systems, architecture, APIs and scalability"
-    )
-
-    ai_ml: list[str] = Field(description="AI, machine learning and model integration")
-
-    domain_knowledge: list[str] = Field(
-        description="Healthcare standards and regulatory compliance"
-    )
-
-    soft_skills: list[str] = Field(
-        description="Communication, leadership, mentorship and problem solving"
-    )
-
-
-agent = create_agent(
-    model="google_genai:gemini-3.5-flash-lite",
-    tools=[],
-    system_prompt=system_prompt,
-    response_format=SkillResponse,
-    checkpointer=InMemorySaver(),
-)
-
-config = {"configurable": {"thread_id": str(uuid7())}}
-
-result = agent.stream_events(
-    {"messages": [{"role": "user", "content": jd}]},
-    config=config,
-    version="v3"
-)
-
-for event in result:
-    print(event)
-
-
-# print(result["structured_response"].model_dump_json(indent=2))
-# print(result["structured_response"].model_dump())
-# print(result["structured_response"])
+if __name__ == "__main__":
+    main()
