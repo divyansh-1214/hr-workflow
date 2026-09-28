@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from langchain.agents import create_agent
+from langchain.agents.structured_output import SchemaT
 from langchain_core.utils.uuid import uuid7
 from langgraph.checkpoint.memory import InMemorySaver
 from pydantic import BaseModel, Field
@@ -89,11 +90,16 @@ agent = create_agent(
 
 config = {"configurable": {"thread_id": str(uuid7())}}
 
-result = agent.invoke(
+result = agent.stream_events(
     {"messages": [{"role": "user", "content": jd}]},
     config=config,
+    version="v3"
 )
 
-print(result["structured_response"].model_dump_json(indent=2))
-print(result["structured_response"].model_dump())
-print(result["structured_response"])
+for event in result:
+    print(event)
+
+
+# print(result["structured_response"].model_dump_json(indent=2))
+# print(result["structured_response"].model_dump())
+# print(result["structured_response"])
