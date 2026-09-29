@@ -42,7 +42,8 @@ def main() -> None:
     # for skill in result["skills"]:
     #     print(f"- {skill}")
     # print(result["resume_text"])
-    print(result["scores"])
+    print(result["scores"].model_dump_json(indent=2))
+
 
 if __name__ == "__main__":
     main()

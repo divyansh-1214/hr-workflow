@@ -21,10 +21,6 @@ class Scores(BaseModel):
     reasoning: str
 
 
-class Rating(BaseModel):
-    score: Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-
 llm = init_chat_model("google_genai:gemini-3.5-flash-lite", temperature=0.7)
 
 system_prompt_skills_extraction = """

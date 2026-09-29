@@ -1,10 +1,7 @@
-from numbers import Number
-
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from ..models import (
-    Rating,
     Scores,
     Skills,
     llm,
@@ -62,5 +59,4 @@ def rate_resume(state: ResumeState) -> dict:
             HumanMessage(content=", ".join(skills or [])),
         ]
     )
-    print(rating.model_dump_json(indent=2))
     return {"scores": rating}
