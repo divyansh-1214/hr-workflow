@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-
+from langchain_community.document_loaders import PyPDFLoader
 from src.workflows.graph import graph
 
 load_dotenv()
@@ -39,7 +39,7 @@ def main() -> None:
     print("Extracted skills:")
     for skill in result["skills"]:
         print(f"- {skill}")
-
+    print(result["resume_text"])
 
 if __name__ == "__main__":
     main()

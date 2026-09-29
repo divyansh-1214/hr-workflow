@@ -1,3 +1,4 @@
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from ..models import Skills, llm, system_prompt_skills_extraction
@@ -30,8 +31,9 @@ def extract_skill(state: ResumeState) -> dict:
 
 
 def get_resume(state: ResumeState) -> dict:
-    resume_text = state.get("resume_text")
-    if resume_text is None:
+    docs = PyPDFLoader("Divyansh_Resume.pdf").load()
+    text = "\n".join(d.page_content for d in docs)
+    if text is None:
         raise KeyError("resume_text is required")
 
-    return {"resume_text": resume_text.strip()}
+    return {"resume_text": text.strip()}
