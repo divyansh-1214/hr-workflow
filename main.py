@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from langchain_community.document_loaders import PyPDFLoader
+
 from src.workflows.graph import graph
 
 load_dotenv()
@@ -33,13 +33,16 @@ jd = """
     - Strong problem-solving skills and clear communication, with the ability to align engineers and stakeholders around a technical approach
     - Strong experience with cloud platforms (AWS, GCP, or Azure) and containerization/orchestration (Docker, Kubernetes
 """
+
+
 # print(jd)
 def main() -> None:
     result = graph.invoke({"jd_text": jd})
     print("Extracted skills:")
-    for skill in result["skills"]:
-        print(f"- {skill}")
-    print(result["resume_text"])
+    # for skill in result["skills"]:
+    #     print(f"- {skill}")
+    # print(result["resume_text"])
+    print(result["scores"])
 
 if __name__ == "__main__":
     main()
